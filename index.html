@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>КитобХон</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="home-page">
+  <div class="header">
+    <h1>📚 КитобХон</h1>
+    <button class="profile-btn" onclick="showProfile()">👤 Профиль</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="🔍 Поиск книг..." oninput="searchBooks(this.value)">
+  </div>
+  <div class="books-grid" id="books-grid"></div>
+</div>
+<div id="book-page" class="book-page">
+  <button class="back-btn" onclick="showHome()">← Назад</button>
+  <img id="book-cover" class="book-cover" src="" alt="Обложка">
+  <div class="book-title" id="book-title"></div>
+  <div class="book-author" id="book-author"></div>
+  <div class="book-desc" id="book-desc"></div>
+  <button class="read-btn" onclick="readBook()">📖 Читать книгу</button>
+  <button class="read-btn" id="fav-btn" onclick="toggleFavorite()"
+    style="background:white; color:#2563eb; border:2px solid #2563eb; margin-bottom:20px;">
+    🤍 В избранное
+  </button>
+  <div class="audio-section">
+    <h2>🎧 Аудиокнига по главам</h2>
+    <div id="audio-list"></div>
+  </div>
+</div>
+<div id="profile-page" class="profile-page">
+  <button class="back-btn" onclick="showHome()">← Назад</button>
+  <div class="profile-header">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-name" id="profile-name">Читатель</div>
+  </div>
+  <div class="menu-list">
+    <div class="menu-item" onclick="showFavorites()">
+      <span>❤️</span>
+      <span class="menu-item-text">Избранное</span>
+      <span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="showHistory()">
+      <span>📖</span>
+      <span class="menu-item-text">История чтения</span>
+      <span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="openDonate()">
+      <span>💛</span>
+      <span class="menu-item-text">Поддержать проект (Донат)</span>
+      <span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="openSupport()">
+      <span>💬</span>
+      <span class="menu-item-text">Помощь / Поддержка</span>
+      <span class="menu-arrow">›</span>
+    </div>
