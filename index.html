@@ -1,95 +1,78 @@
-// ИЗБРАННОЕ
-function toggleFavorite() {
-  if (!currentBook) return;
-  const idx = currentUser.favorites.findIndex(f => f.id === currentBook.id);
-  if (idx === -1) {
-    currentUser.favorites.push({ id: currentBook.id, title: currentBook.title, author: currentBook.author, cover: currentBook.cover });
-    document.getElementById('fav-btn').textContent = '❤️ В избранном';
-  } else {
-    currentUser.favorites.splice(idx, 1);
-    document.getElementById('fav-btn').textContent = '🤍 В избранное';
-  }
-  saveData();
-}
-
-// ПОКАЗАТЬ ИЗБРАННОЕ
-function showFavorites() {
-  document.getElementById('profile-page').style.display = 'none';
-  document.getElementById('favorites-page').style.display = 'block';
-  const list = document.getElementById('favorites-list');
-  if (currentUser.favorites.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div>🤍</div><p>Пока нет избранных книг</p></div>';
-  } else {
-    list.innerHTML = currentUser.favorites.map(b => `
-      <div class="book-card" onclick="showBook(${b.id})">
-        <img src="${b.cover}" alt="${b.title}">
-        <div class="book-card-info"><h3>${b.title}</h3><p>${b.author}</p></div>
-      </div>
-    `).join('');
-  }
-}
-
-// ПОКАЗАТЬ ИСТОРИЮ
-function showHistory() {
-  document.getElementById('profile-page').style.display = 'none';
-  document.getElementById('history-page').style.display = 'block';
-  const list = document.getElementById('history-list');
-  if (currentUser.history.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div>📖</div><p>Ты ещё не читал книги</p></div>';
-  } else {
-    list.innerHTML = currentUser.history.map(b => `
-      <div class="book-card" onclick="showBook(${b.id})">
-        <img src="${b.cover}" alt="${b.title}">
-        <div class="book-card-info"><h3>${b.title}</h3><p>${b.author}</p></div>
-      </div>
-    `).join('');
-  }
-}
-
-// ЧИТАТЬ КНИГУ
-function readBook() {
-  if (!currentBook) return;
-  alert('📖 Функция чтения скоро появится!\nПока скачайте PDF через бота.');
-}
-
-// СЛУШАТЬ АУДИО
-function playAudio(num) {
-  alert(🎧 Глава ${num} скоро появится!\nПока слушайте через бота.);
-}
-
-// ДОНАТ
-function openDonate() {
-  window.open('https://t.me/твой_username', '_blank');
-}
-
-// ПОДДЕРЖКА
-function openSupport() {
-  window.open('https://t.me/твой_username', '_blank');
-}
-
-// ПОИСК
-function searchBooks(query) {
-  const q = query.toLowerCase();
-  const filtered = BOOKS.filter(b =>
-    b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q)
-  );
-  renderBooks(filtered);
-}
-
-// ОТРИСОВАТЬ КНИГИ
-function renderBooks(books) {
-  const grid = document.getElementById('books-grid');
-  grid.innerHTML = books.map(b => `
-    <div class="book-card" onclick="showBook(${b.id})">
-      <img src="${b.cover}" alt="${b.title}">
-      <div class="book-card-info">
-        <h3>${b.title}</h3>
-        <p>${b.author}</p>
-      </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>КитобХон</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="home-page">
+  <div class="header">
+    <h1>📚 КитобХон</h1>
+    <button class="profile-btn" onclick="showProfile()">👤 Профиль</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="🔍 Поиск книг..." oninput="searchBooks(this.value)">
+  </div>
+  <div class="books-grid" id="books-grid"></div>
+</div>
+<div id="book-page" class="book-page">
+  <button class="back-btn" onclick="showHome()">← Назад</button>
+  <img id="book-cover" class="book-cover" src="" alt="Обложка">
+  <div class="book-title" id="book-title"></div>
+  <div class="book-author" id="book-author"></div>
+  <div class="book-desc" id="book-desc"></div>
+  <button class="read-btn" onclick="readBook()">📖 Читать книгу</button>
+  <button class="read-btn" id="fav-btn" onclick="toggleFavorite()"
+    style="background:white; color:#2563eb; border:2px solid #2563eb; margin-bottom:20px;">
+    🤍 В избранное
+  </button>
+  <div class="audio-section">
+    <h2>🎧 Аудиокнига по главам</h2>
+    <div id="audio-list"></div>
+  </div>
+</div>
+<div id="profile-page" class="profile-page">
+  <button class="back-btn" onclick="showHome()">← Назад</button>
+  <div class="profile-header">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-name" id="profile-name">Читатель</div>
+  </div>
+  <div class="menu-list">
+    <div class="menu-item" onclick="showFavorites()">
+      <span>❤️</span>
+      <span class="menu-item-text">Избранное</span>
+      <span class="menu-arrow">›</span>
     </div>
-  `).join('');
-}
-
-// СТАРТ
-loadData();
-renderBooks(BOOKS);
+    <div class="menu-item" onclick="showHistory()">
+      <span>📖</span>
+      <span class="menu-item-text">История чтения</span>
+      <span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="openDonate()">
+      <span>💛</span>
+      <span class="menu-item-text">Поддержать проект (Донат)</span>
+      <span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="openSupport()">
+      <span>💬</span>
+      <span class="menu-item-text">Помощь / Поддержка</span>
+      <span class="menu-arrow">›</span>
+    </div>
+  </div>
+</div>
+<div id="favorites-page" class="sub-page">
+  <button class="back-btn" onclick="showProfile()">← Назад</button>
+  <h2 style="margin-bottom:16px;">❤️ Избранное</h2>
+  <div class="books-grid" id="favorites-list"></div>
+</div>
+<div id="history-page" class="sub-page">
+  <button class="back-btn" onclick="showProfile()">← Назад</button>
+  <h2 style="margin-bottom:16px;">📖 История чтения</h2>
+  <div class="books-grid" id="history-list"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
